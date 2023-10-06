@@ -5,7 +5,14 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField]
-    private float PlayerSpeed = 5.0f;
+    private float _playerSpeed = 5.0f;
+
+    [SerializeField]
+    private GameObject _laserPrefab;
+
+    [SerializeField]
+    private float _fireRate = 0.4f;
+    private float _nextFire = 0.0f;
 
     // Start is called before the first frame update
     private void Start()
@@ -17,6 +24,17 @@ public class Player : MonoBehaviour
     private void Update()
     {
         PlayerMovement();
+        FireLaser();
+    }
+
+    private void FireLaser()
+    {
+        if (Input.GetButton("Fire1") && Time.time > _nextFire)
+        {
+            Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.91f, 0), Quaternion.identity);
+
+            _nextFire = Time.time + _fireRate;
+        }
     }
 
     private void PlayerMovement()
@@ -24,7 +42,7 @@ public class Player : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        transform.Translate(new Vector3(horizontalInput, verticalInput, 0) * PlayerSpeed * Time.deltaTime);
+        transform.Translate(new Vector3(horizontalInput, verticalInput, 0) * _playerSpeed * Time.deltaTime);
 
         RestrainPlayerPosition();
     }
